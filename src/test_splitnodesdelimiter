@@ -1,0 +1,4 @@
+node = TextNode("This is `code` block", TextType.TEXT)
+new_nodes = split_nodes_delimiter([node], "`", TextType.CODE)
+print(new_nodes)
+# Should show: [TextNode("This is ", text), TextNode("code", code), TextNode(" block", text)]
