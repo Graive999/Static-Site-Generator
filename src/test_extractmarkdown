@@ -1,0 +1,8 @@
+
+
+text_img = "This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif)"
+print(extract_markdown_images(text_img)) 
+
+
+text_link = "This is text with a link [to boot dev](https://www.boot.dev)"
+print(extract_markdown_links(text_link))

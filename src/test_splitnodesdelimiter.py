@@ -1,3 +1,7 @@
+from textnode  import TextNode, TextType
+from splitnodesdelimiter import split_nodes_delimiter
+
+
 node = TextNode("This is `code` block", TextType.TEXT)
 new_nodes = split_nodes_delimiter([node], "`", TextType.CODE)
 print(new_nodes)
