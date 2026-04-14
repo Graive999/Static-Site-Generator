@@ -1,3 +1,8 @@
+from textnode import TextType, TextNode
+from extractmarkdown import extract_markdown_images, extract_markdown_links
+
+
+
 def split_nodes_image(old_nodes):
     new_nodes = []
     for old_node in old_nodes:

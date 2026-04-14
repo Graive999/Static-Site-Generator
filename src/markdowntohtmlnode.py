@@ -1,5 +1,9 @@
 
 
+
+from blocktoblocktype import block_to_block_type, BlockType
+from markdowntoblocks import markdown_to_blocks
+from texttochildren import text_to_children
 from htmlnode import ParentNode
 
 def markdown_to_html_node(markdown):
@@ -52,10 +56,32 @@ def create_ul_node(block):
         html_items.append(ParentNode("li", children))
     return ParentNode("ul", html_items)
 
+def create_ol_node(block):
+    lines = block.split("\n")
+    html_items = []
+    for line in lines:
+        # Split by the first dot and space to remove "1. ", "2. ", etc.
+        # We find the first index of ". " and slice from after it
+        content = line[line.find(". ") + 2:]
+        children = text_to_children(content)
+        html_items.append(ParentNode("li", children))
+    return ParentNode("ol", html_items)
+
 def create_code_node(block):
-    text = block[4:-3] # Strip backticks
+    text = block[4:-3]
     children = text_to_children(text)
     code = ParentNode("code", children)
     return ParentNode("pre", [code])
 
-
+def create_quote_node(block):
+    lines = block.split("\n")
+    new_lines = []
+    for line in lines:
+        if not line.startswith(">"):
+            raise ValueError("Invalid quote block")
+        # Strip the > and the leading space if it exists
+        new_lines.append(line.lstrip(">").strip())
+    
+    content = " ".join(new_lines)
+    children = text_to_children(content)
+    return ParentNode("blockquote", children)
