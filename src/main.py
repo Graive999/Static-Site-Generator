@@ -3,9 +3,11 @@ from textnode import TextNode, TextType
 from pathlib import Path
 import os
 import shutil
+import sys
+
+default_basepath = "/"
 
 def copy_files_recursive(source_dir_path, dest_dir_path):
-    # Create the destination directory if it doesn't exist
     if not os.path.exists(dest_dir_path):
         os.mkdir(dest_dir_path)
 
@@ -17,33 +19,32 @@ def copy_files_recursive(source_dir_path, dest_dir_path):
         if os.path.isfile(from_path):
             shutil.copy(from_path, dest_path)
         else:
-            # If it's a directory, recurse!
             copy_files_recursive(from_path, dest_path)
 
 
 
-def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
-    # Iterate over every entry in the content directory
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path,basepath):
     for filename in os.listdir(dir_path_content):
         from_path = os.path.join(dir_path_content, filename)
         dest_path = os.path.join(dest_dir_path, filename)
 
-        # If it's a file, check if it's markdown and generate HTML
         if os.path.isfile(from_path):
             if filename.endswith(".md"):
-                # Change extension from .md to .html
                 dest_html_path = Path(dest_path).with_suffix(".html")
-                # Use your existing generate_page function
-                generate_page(from_path, template_path, dest_html_path)
+                generate_page(from_path, template_path, dest_html_path, basepath)
         
-        # If it's a directory, create it in public and recurse
         else:
             os.makedirs(dest_path, exist_ok=True)
-            generate_pages_recursive(from_path, template_path, dest_path)
+            generate_pages_recursive(from_path, template_path, dest_path, basepath)
 
 def main():
+
+    basepath = default_basepath
+    if len(sys.argv) > 1:
+        basepath = sys.argv[1]
+
     source_static = "./static"
-    dest_public = "./public"
+    dest_public = "./docs"
 
     print("Deleting public directory...")
     if os.path.exists(dest_public):
@@ -55,10 +56,10 @@ def main():
 
     content_dir = "content"
     template = "template.html"
-    dest_dir = "public"
+    dest_dir = "docs"
 
     print(f"Generating pages from {content_dir} to {dest_dir} using {template}...")
-    generate_pages_recursive(content_dir, template, dest_dir)
+    generate_pages_recursive(content_dir, template, dest_dir, basepath)
 
 if __name__ == "__main__":
     main()
